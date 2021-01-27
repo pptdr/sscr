@@ -1,0 +1,56 @@
+"""smart_signal URL Configuration
+
+The `urlpatterns` list routes URLs to views. For more information please see:
+    https://docs.djangoproject.com/en/2.0/topics/http/urls/
+Examples:
+Function views
+    1. Add an import:  from my_app import views
+    2. Add a URL to urlpatterns:  path('', views.home, name='home')
+Class-based views
+    1. Add an import:  from other_app.views import Home
+    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
+Including another URLconf
+    1. Import the include() function: from django.urls import include, path
+    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
+"""
+from django.conf.urls import url, include
+from django.contrib import admin
+from django.urls import path
+from . import views
+from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.auth.views import PasswordResetView, PasswordResetDoneView, PasswordResetConfirmView,PasswordResetCompleteView
+
+
+urlpatterns = [
+#    url(r'^$',views.page_under_construction,name='page_under_construction'),
+    url(r'^$',views.layout,name='layout'),
+    url(r'^about$',views.about, name='about'),
+    url(r'^home$',views.home, name='home'),
+    url(r'^login$', views.login, name='login'),
+    url(r'^logout/$', views.logout, name='logout'),
+    path('admin/', admin.site.urls),
+    url(r'^adminpage$', views.adminpage,name='adminpage'),
+    url(r'^userpage$', views.userpage, name='userpage'),
+    url(r'^client_menu$', views.client_menu, name='client_menu'),
+    url(r'^addclient$', views.addclient, name='addclient'),
+    url(r'^show_clients$', views.show_clients, name='show_clients'),
+    url(r'^deleteclient$', views.deleteclient, name='deleteclient'),
+    url(r'^show_signals$', views.show_signals, name='show_signals'),
+    #url(r'^uploadvideo$', views.uploadvideo_working, name='uploadvideo'),
+    url(r'^uploadvideo1$', views.uploadvideo, name='uploadvideo1'),
+    url(r'^uploadvideo_at_all_sites$', views.uploadvideo_at_all_sites, name='uploadvideo_at_all_sites'),
+    url(r'^deletevideo$', views.deletevideo, name='deletevideo'),
+    url(r'^displaylist_user$', views.displaylist_user, name='displaylist_user'),
+    url(r'^displaylist_admin$', views.displaylist_admin, name='displaylist_admin'),
+    url(r'^listout_videos$', views.displaylist_user, name='listout_videos'),
+
+#    path('accounts/', include('django.contrib.auth.urls')),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='Forgot_password/password_reset_done.html'), name='password_reset_done'),
+    path('reset/(?P<uidb64>[0-9A-Za-z]+)-(?P<token>.+)/', auth_views.PasswordResetConfirmView.as_view(template_name="Forgot_password/password_reset_confirm.html"), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='Forgot_password/password_reset_complete.html'), name='password_reset_complete'),
+    path("password_reset", views.password_reset_request, name="password_reset"),
+
+
+] + static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)

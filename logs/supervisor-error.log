@@ -1,0 +1,48 @@
+Starting smart_signal as ubuntu
+[2020-07-09 17:48:50 +0000] [27162] [INFO] Starting gunicorn 20.0.4
+[2020-07-09 17:48:50 +0000] [27162] [INFO] Listening at: http://127.0.0.1:8000 (27162)
+[2020-07-09 17:48:50 +0000] [27162] [INFO] Using worker: sync
+[2020-07-09 17:48:50 +0000] [27176] [INFO] Booting worker with pid: 27176
+[2020-07-09 17:49:02 +0000] [27162] [INFO] Handling signal: term
+[2020-07-09 17:49:02 +0000] [27176] [INFO] Worker exiting (pid: 27176)
+[2020-07-09 17:49:02 +0000] [27162] [INFO] Shutting down: Master
+Starting smart_signal as ubuntu
+[2020-07-09 17:49:03 +0000] [27181] [INFO] Starting gunicorn 20.0.4
+[2020-07-09 17:49:03 +0000] [27181] [INFO] Listening at: http://127.0.0.1:8000 (27181)
+[2020-07-09 17:49:03 +0000] [27181] [INFO] Using worker: sync
+[2020-07-09 17:49:03 +0000] [27188] [INFO] Booting worker with pid: 27188
+[2020-07-10 17:51:09 +0000] [27181] [INFO] Handling signal: term
+[2020-07-10 17:51:09 +0000] [27188] [INFO] Worker exiting (pid: 27188)
+[2020-07-10 17:51:09 +0000] [27181] [INFO] Shutting down: Master
+Starting smart_signal as ubuntu
+[2020-07-10 17:51:48 +0000] [1034] [INFO] Starting gunicorn 20.0.4
+[2020-07-10 17:51:48 +0000] [1034] [INFO] Listening at: http://127.0.0.1:8000 (1034)
+[2020-07-10 17:51:48 +0000] [1034] [INFO] Using worker: sync
+[2020-07-10 17:51:48 +0000] [1080] [INFO] Booting worker with pid: 1080
+[2020-07-10 18:38:30 +0000] [1034] [INFO] Handling signal: term
+[2020-07-10 18:38:30 +0000] [1080] [INFO] Worker exiting (pid: 1080)
+[2020-07-10 18:38:30 +0000] [1034] [INFO] Shutting down: Master
+Starting smart_signal as ubuntu
+[2020-07-10 18:39:09 +0000] [1035] [INFO] Starting gunicorn 20.0.4
+[2020-07-10 18:39:09 +0000] [1035] [INFO] Listening at: http://127.0.0.1:8000 (1035)
+[2020-07-10 18:39:09 +0000] [1035] [INFO] Using worker: sync
+[2020-07-10 18:39:09 +0000] [1081] [INFO] Booting worker with pid: 1081
+[2020-07-13 07:12:38 +0000] [1035] [INFO] Handling signal: term
+[2020-07-13 07:12:38 +0000] [1081] [INFO] Worker exiting (pid: 1081)
+[2020-07-13 07:12:38 +0000] [1035] [INFO] Shutting down: Master
+Starting smart_signal as ubuntu
+[2020-08-10 22:58:21 +0000] [974] [INFO] Starting gunicorn 20.0.4
+[2020-08-10 22:58:21 +0000] [974] [INFO] Listening at: http://127.0.0.1:8000 (974)
+[2020-08-10 22:58:21 +0000] [974] [INFO] Using worker: sync
+[2020-08-10 22:58:21 +0000] [1012] [INFO] Booting worker with pid: 1012
+[2020-08-10 23:03:01 +0000] [974] [INFO] Handling signal: term
+[2020-08-10 23:03:01 +0000] [1012] [INFO] Worker exiting (pid: 1012)
+[2020-08-10 23:03:01 +0000] [974] [INFO] Shutting down: Master
+Starting smart_signal as ubuntu
+[2020-08-10 23:03:42 +0000] [919] [INFO] Starting gunicorn 20.0.4
+[2020-08-10 23:03:42 +0000] [919] [INFO] Listening at: http://127.0.0.1:8000 (919)
+[2020-08-10 23:03:42 +0000] [919] [INFO] Using worker: sync
+[2020-08-10 23:03:42 +0000] [977] [INFO] Booting worker with pid: 977
+[2020-08-22 13:33:30 +0000] [919] [INFO] Handling signal: term
+[2020-08-22 13:33:30 +0000] [977] [INFO] Worker exiting (pid: 977)
+[2020-08-22 13:33:30 +0000] [919] [INFO] Shutting down: Master

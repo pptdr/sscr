@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>Smart Signal Management</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/userpage.css'%}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+</head>
+
+<body style="background: aliceblue;">
+
+    <div class="company-name">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Hello, SDP
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu topnav-right">
+                <li><a href="#home">Home</a></li>
+                <li><a href="about">About</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+        <img src="static/images/Ecube_logo.png" width="40" height="40">
+        <span>Ecube integrated solutions (OPC) Pvt.Ltd</span>
+    </div>
+
+    </div>
+    </div>
+
+    <div class="sidenav-left">
+        <div class="panel-dropdown">
+            <div class="panel-group" id="accordion">
+                <!-- First Panel -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" data-toggle="collapse" data-target="#uploadDownloadVideos">
+                            <i class="fa fa-video-camera" aria-hidden="true"></i>
+                            <span class="panel-dropdown-text">Upload/List Videos</span>
+                        </h4>
+                    </div>
+                    <div id="uploadDownloadVideos" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <i class="fa fa-upload" aria-hidden="true"></i>
+                            <a href="uploadvideo">
+                                <span class="panel-dropdown-text">
+                                    Upload a video
+                                </span>
+                            </a>
+                        </div>
+                        <div class="panel-body">
+                            <i class="fa fa-list" aria-hidden="true"></i>
+                            <a href="displaylist_user">
+                                <span class="panel-dropdown-text">
+                                    List out videos
+                                </span>
+                            </a>
+                        </div>
+                        <div class="panel-body">
+                            <i class="fa fa-keyboard-o" aria-hidden="true"></i>
+                            <a href="trail">
+                                <span class="panel-dropdown-text">
+                                    Trail for commands........
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

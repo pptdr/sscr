@@ -1,0 +1,179 @@
+{% load static %}
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+    <title>Smart Signal Management</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/userpage.css'%}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+
+</head>
+
+<body style="background: aliceblue;">
+    <style>
+        /* .sidenav-left {
+            height: calc(100% - 70px);
+            width: 350px;
+            position: fixed;
+            background-color: lightslategrey;
+            overflow-x: auto;
+            border: 1px solid white;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+            left: 15px;
+            position: absolute;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #ddd
+        }
+
+        .show {
+            display: block;
+        }
+
+        .company-name {
+            height: 70px;
+            line-height: 25px;
+            font-size: 25px;
+            padding: 18px 0;
+            text-align: center;
+            background: black;
+            font-weight: bold;
+            color: white;
+            border-bottom: 1px solid white;
+        }
+
+        .topnav-right {
+            float: right;
+        }
+
+        .panel-dropdown {
+            width: 90%;
+            margin: 5%;
+        }
+        
+        .panel-dropdown .panel-title {
+            position: relative;
+        }
+
+        .panel-dropdown .panel-body {
+            height: 40px;
+            line-height: 12px;
+            background: lightgray;
+        }
+
+        .panel-dropdown .panel-title::after {
+            content: "\f107";
+            color: #333;
+            top: -2px;
+            right: 0px;
+            position: absolute;
+            font-family: "FontAwesome"
+        }
+
+        .panel-dropdown .panel-title[aria-expanded="true"]::after {
+            content: "\f106";
+        }
+
+        .panel-dropdown a:link,
+        .panel-dropdown a:visited,
+        .panel-dropdown a:hover,
+        .panel-dropdown a:active {
+            text-decoration: none;
+            font-size: 16px;
+            color: black;
+            height: 30px;
+        }
+        .panel-dropdown-text {
+            margin: auto 10px;
+        } */
+
+    </style>
+
+    <div class="company-name">
+        <div class="dropdown user-dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Hello, SDP
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu topnav-right">
+                <li><a href="#home">Home</a></li>
+                <li><a href="about">About</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+        <img src="static/images/Ecube_logo.png" width="40" height="40">
+        <span>Ecube integrated solutions (OPC) Pvt.Ltd</span>
+    </div>
+
+    </div>
+    </div>
+
+
+    <div class="sidenav-left">
+        <div class="panel-dropdown">
+            <div class="panel-group" id="accordion">
+                <!-- First Panel -->
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title" data-toggle="collapse" data-target="#uploadDownloadVideos">
+                            <i class="fa fa-video-camera" aria-hidden="true"></i>
+                            <span class="panel-dropdown-text">Upload/List Videos</span>
+                        </h4>
+                    </div>
+                    <div id="uploadDownloadVideos" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            <i class="fa fa-upload" aria-hidden="true"></i>
+                            <a href="uploadvideo">
+                                <span class="panel-dropdown-text">
+                                    Upload a video
+                                </span>
+                            </a>
+                        </div>
+                        <div class="panel-body">
+                            <i class="fa fa-list" aria-hidden="true"></i>
+                            <a href="displaylist_user">
+                                <span class="panel-dropdown-text">
+                                    List out videos
+                                </span>
+                            </a>
+                        </div>
+<!--                        <div class="panel-body">
+                            <i class="fa fa-keyboard-o" aria-hidden="true"></i>
+                            <a href="trail">
+                                <span class="panel-dropdown-text">
+                                    Trail for commands........
+                                </span>
+                            </a>
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

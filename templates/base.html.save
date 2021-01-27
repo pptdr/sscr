@@ -1,0 +1,9 @@
+{% load static %}
+{% static "images" as baseUr
+{% block content %}
+
+{% endblock %}
+
+
+</body>
+</html>

@@ -1,0 +1,5 @@
+cnm,location,created_on,created_at_time,size_of_video,Video_title,frequency,expiry_period
+sdpmedia,miraj-ganeshtemple,2021-01-15,15:10,2,10-seconds/video4_6sec.mp4,101,1
+sdpmedia,miraj-ganeshtemple,2021-01-15,15:12,3,10-seconds/video1_10sec.mp4,1,10
+sdpmedia,miraj-ganeshtemple,2021-01-15,17:10,1,20-seconds/Eirgrid_20sec.mp4,2,2
+sdpmedia,miraj-ganeshtemple,2021-01-15,17:12,1,20-seconds/Eirgrid_20sec.mp4,2,2

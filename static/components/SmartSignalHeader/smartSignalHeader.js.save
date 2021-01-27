@@ -1,0 +1,33 @@
+
+class SmartSignalHeader extends HTMLElement {
+    constructor() {
+        super();
+    }
+
+    connectedCallback() {
+	this.isAuthenticated = this.getAttribute("isAuthenticated");
+        this.innerHTML = `
+        <div class="company-name">
+            <div class="dropdown user-dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Hello, ${this.getAttribute("name")}
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu topnav-right">
+                    <li><a href="home">Home</a></li>
+                    <li><a href="about">About</a></li>
+
+		    ${this.isAuthenticated ? 
+			
+                    `<li><a href="/logout">Logout</a></li>`
+				    :``
+		    }
+                </ul>
+            </div>
+            <img src="" width="40" height="40">
+            <span>Ecube Integrated Solutions (OPC) Pvt.Ltd</span>
+        </div>`;
+    }
+
+}
+
+window.customElements.define('smart-signal-header', SmartSignalHeader);

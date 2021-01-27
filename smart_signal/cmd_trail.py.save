@@ -1,0 +1,9 @@
+import os, subprocess
+
+cmd = 'aws s3 ls'
+try:
+    output = put([cmd],shell=True).decode()
+    print("cmd_output:",output)
+except CalledProcessError as exec:
+    output = exec.output
+    print("in exception block:",output)

@@ -1,0 +1,115 @@
+{% load static %}
+{% static "images" as baseUrl %}
+
+<!DOCTYPE html>
+<font>
+  <head>
+
+      <title>Smart Signal web app</title>
+      <link rel="stylesheet" type="text/css" href="{% static 'styles/main1.css'%}">
+      <link href="{% static 'plugins/font-awesome-4.7.0/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+  </head>
+ <!-- <body bgcolor="#33a5ff" for other pages
+  <body bgcolor="#33d4ff">    -->
+
+  <p>
+  <header>
+      <style>
+
+    .first-info{
+    position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: fixed;
+    background-image: url( "{% static 'images/Traffic_web_main.jpg' %}");
+}
+.login_form{
+    width: 350px;
+    background: linear-gradient(45deg, black, transparent);
+    margin-left: 35%;
+    margin-right: 35%;
+    position: absolute;
+    bottom: 4px;
+    border-radius: 15px;
+    height: 235px;
+}
+.header_form{
+    width:100%;
+    top : 0 px
+    padding: 10px;
+    font-size: 20px;
+    position : absolute;
+    text-align : center;
+}
+input[type=text] {
+    width: 300px;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    font-size= 10px: ;
+}
+
+input[type=password] {
+width: 300px;
+padding: 12px 20px;
+margin: 8px 0;
+box-sizing: border-box;
+}
+.login_button {
+    background: darkblue;
+    color: white;
+    width: 100px;
+    height: 30px;
+}
+</style>
+      <div>
+      <header class="header_form" style="height: 100px; width: 100%; text-color:white; text-align:center;z-index:1;">
+          <h1 style="color: white;">Ecube Integrated Solutions (OPC) Pvt.Ltd</h1>
+      </header></div>
+
+      <header class="container">
+          <div class="row first-info">
+          <div class="row">
+
+            {%block content%}
+
+                <!-- <div style="text-align:center">   -->
+                    <div class="login_form">
+                    <span style="font-size: 20px;">USER LOGIN</span>
+                    <form id="login" action="login" method="POST" >
+ {% csrf_token %}
+                    <p>
+                            <div class="input-container">
+                            <i class="fa fa-user icon"></i>
+                            <input class="input-field" type="text" placeholder="username" name="username">
+                            </div>
+                            <br>
+                            <div class="input-container">
+                            <i class="fa fa-key icon"></i>
+                            <input class="input-field" type="password" placeholder="password" name="password">
+                            </div>
+
+                            <div class=\"row\">
+                            <div class=\"col s5 offset-s1 right-align\="" style="margin-left: 0;position: absolute;">
+                            <input type="checkbox" name="remember" ?>
+                            <label for="remember-me">Remember me</label>
+                            </div>
+				<div class=\"col s5 offset-s1 left-align\="">
+                                <a href="forgot-password.php" style="margin-right: 0; margin-left: 50px; position: absolute;">Forgot password$
+                            <br>
+                            </div>
+                    </p>
+
+                    {% if request.GET.next %}
+                        <input type="hidden" name="next" value={{request.GET.next}}>
+                    {% endif %}
+                    <button class="login_button" type="submit">LOGIN</button>
+                    {%endblock%}
+                </div>
+            </form>
+   </header>
+

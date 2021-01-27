@@ -1,0 +1,598 @@
+import os, csv
+from typing import Dict, Any
+from datetime import datetime
+import time
+import pandas as pd
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from django.contrib.auth.models import User, auth
+from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
+from .models import Client_details, videos_at, Client
+from django.core.files.storage import FileSystemStorage
+
+from django.shortcuts import render, redirect
+from django.core.mail import send_mail, BadHeaderError
+from django.http import HttpResponse
+from django.contrib.auth.forms import PasswordResetForm
+from django.contrib.auth.models import User
+from django.template.loader import render_to_string
+from django.db.models.query_utils import Q
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.encoding import force_bytes
+from django.contrib.auth import views as auth_views
+
+def page_under_construction(request):
+    return render(request,'page_under_construction.html')
+
+def about(request):
+    return render(request, 'about.html')
+
+def layout(request):
+   # return render(request, 'layout.html')
+     return render(request,'layout1.html')
+
+def home(request):
+    if request.user.is_superuser:
+        return render(request, 'adminpage.html')
+    else:
+        return render(request,'userpage.html')
+
+def logout(request):
+    auth.logout(request)
+    return redirect('/')
+
+@csrf_exempt
+def login(request):
+    if request.method == 'POST':
+        unm = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=unm, password=password)
+
+        if user is not None:
+            auth.login(request, user)
+            if request.user.is_superuser:
+                return render(request, 'adminpage.html')
+            else:
+                return render(request, 'userpage.html')
+        else:
+            messages.info(request, "Invalid credentials")
+            return redirect('layout1')
+    else:
+        return render(request, 'layout1.html')
+
+def adminpage(request):
+    return render(request, 'adminpage.html')
+
+def userpage(request):
+    return render(request, 'userpage.html')
+
+
+def get_companyname(current_user):
+    company_name = ''
+    clidetails = Client.objects.all()
+
+    for client in clidetails:
+        client_user = str(client.user)
+
+        if current_user == client_user:
+           # print('current_user's company name: ', client.company_name)
+            company_name = client.company_name
+
+    return company_name
+
+def get_city_and_location(current_user):
+    values = {}
+    company_name = get_companyname(current_user)
+    #print('company name in get_city_and_location: ',company_name)
+    values["company_name"] = company_name
+
+    cmd = 'aws s3 ls s3://ecube-eis/' + str(company_name) + '/'
+    cmd1 = cmd + ' > city.txt'
+    print(cmd1)
+    res = os.popen(cmd1)
+    res1 = res.read()
+
+    df = pd.read_csv("city.txt", delimiter=',')
+    df.to_csv('city1.csv')
+    f = open("city1.csv", "r")
+    reader1 = csv.reader(f)
+    reader = list(reader1)
+    print("reader: ", reader)
+    num_rows = len(reader) -1
+    city_names = []
+    for line in range(num_rows):
+        #print('col:', row[1])
+        row = reader[line]
+        val = 'PRE' in row[1]
+        t3 = ''
+        if val:
+            t3 = row[1].replace('PRE', ' ')
+
+        t4 = t3.strip()
+        backslash = '/'
+        val = backslash in t4
+        t3 = ''
+        if val:
+            t3 = t4.replace(backslash, ' ')
+
+        t4 = t3.strip()
+        city_names.append(t4)
+
+    values["city_names"]=city_names
+    #print('value',values)
+
+    return values
+
+def time_conversion(temp_date,temp_time):
+    totalSecs = 0
+    gmt_format = '5:30:00'
+    timeList = []
+    timeList.append(temp_time)
+    timeList.append(gmt_format)
+    for tm in timeList:
+        timeParts = [int(s) for s in tm.split(':')]
+        totalSecs += (timeParts[0] * 60 + timeParts[1]) * 60 + timeParts[2]
+    totalSecs, sec = divmod(totalSecs, 60)
+    hr, min = divmod(totalSecs, 60)
+    final_date = temp_date
+    temp_hr = hr
+
+    strzero = '0'
+    if hr > 24:
+        hr = temp_hr - 24
+        dateparts = [int(s) for s in temp_date.split('-')]
+        new_date = dateparts[2] + 1
+
+        if dateparts[1] < 10:
+            month = strzero + str(dateparts[1])
+        else:
+            month = str(dateparts[1])
+
+        final_date = str(dateparts[0])+"-"+month+"-"+str(new_date)
+
+    print(final_date)
+    #print("%d:%02d:%02d" % (hr, min, sec))
+    str_time = str(hr)+":"+str(min)
+
+    return str_time,final_date
+
+def get_videos(res1, cnm , location):
+    #print('res1 in get_videos:', res1)
+    #print('cnm and location in get_videos: ',cnm,location)
+
+    num_rows = len(res1) - 1
+    a = [[0] * 5 for i in range(num_rows)]
+    # a[0][0], a[0][1], a[0][2], a[0][3] = "Date", "Time", "Size in KB", "Video"
+    for j in range(num_rows):
+        a[j][0] = j + 1
+        a[j][1], a[j][2], a[j][3], a[j][4] = res1[j + 1].split()
+        MBFACTOR = float(1 << 20); 
+        mb= int(a[j][3]) / MBFACTOR
+       #print("video size in mb: ",mb)
+        temp = a[j][4]
+        t1 = cnm + '/' + location + '/'
+        val = t1 in temp
+        t = ''
+        tt,dt = time_conversion(a[j][1],a[j][2])
+        print(tt)
+        a[j][1] = dt
+        a[j][2] = tt
+        a[j][3] = round(mb)
+        if val:
+            t = temp.replace(t1, ' ')
+        a[j][4] = t
+
+    return a
+
+def get_clientlist():
+    clients_list = []
+    clidetails = Client.objects.all()
+    count = 0
+    temp = []
+    for c in clidetails:
+        count = count + 1
+        temp.append(c.company_name)
+
+    temp.sort()
+    num_rows = count
+    #print('num_rows: ', num_rows)
+    clients_list = [[0] * 2 for i in range(num_rows)]
+    for j in range(num_rows):
+        clients_list[j][0] = j + 1
+        clients_list[j][1] = str(temp[j])
+
+    #print("Clients_list in get_clientlist: ",clients_list)
+    return clients_list
+
+def get_signals():
+    clidetails = Client.objects.all()
+    city_list= {}
+    city_names = []
+    i = 0
+    sorted_cnm_list =[]
+    for client in clidetails:
+        client_user = str(client.user)
+        company_name = get_companyname(client_user)
+        sorted_cnm_list.append(company_name)
+
+    sorted_cnm_list.sort()
+    print("sorted cnm list: ",sorted_cnm_list)
+    temp1= ''
+    for cnm in sorted_cnm_list:
+        for client in clidetails:
+            client_user = str(client.user)
+            company_name = get_companyname(client_user)
+            if cnm == company_name:
+                temp1 = client_user
+                break
+
+        print(temp1)
+        city = get_city_and_location(temp1)
+        city_list.update({city["company_name"]: city["city_names"]})
+
+    print('city_list:',city_list)
+
+    return city_list
+
+
+def get_all_clients_and_signals():
+    clidetails = Client.objects.all()
+    full_list = []
+    for client in clidetails:
+        current_user = str(client.user)
+        company_name = get_companyname(current_user)
+        # print('company name in get_all_clients_and_signals: ',company_name)
+
+        cmd = 'aws s3 ls s3://ecube-eis/' + str(company_name) + '/'
+        cmd1 = cmd + ' > city.txt'
+        print(cmd1)
+        res = os.popen(cmd1)
+        res1 = res.read()
+     #   print('res1 :', res1)
+        df = pd.read_csv("city.txt", delimiter=',')
+        df.to_csv('city1.csv')
+        f = open("city1.csv", "r")
+        reader1 = csv.reader(f)
+        reader = list(reader1)
+      #  print("reader: ", reader)
+        num_rows = len(reader) - 1
+        city_names = []
+        for line in range(num_rows):
+            # print('col:', row[1])
+            row = reader[line]
+            val = 'PRE' in row[1]
+            t3 = ''
+            if val:
+                t3 = row[1].replace('PRE', ' ')
+
+            t4 = t3.strip()
+            backslash = '/'
+            val = backslash in t4
+            t3 = ''
+            if val:
+                t3 = t4.replace(backslash, ' ')
+
+            t4 = t3.strip()
+            t5 = company_name + '/' + t4
+            city_names.append(t5)
+            full_list.append(t5)
+
+    full_list.sort()
+    #print(full_list)
+    return full_list
+
+def show_signals(request):
+    city_list = get_signals()
+    return render(request, 'show_signals.html',{'city_list':city_list, 'dict_len':len(city_list)})
+
+def addclient(request):
+    if request.method == 'POST' and 'create_user' in request.POST:
+            cnm = request.POST['company_name']
+            clogo = request.POST['company_logo']
+            fnm = request.POST['first_name']
+            lnm = request.POST['last_name']
+            unm = request.POST['username']
+            email = request.POST['email']
+            password1 = request.POST['password1']
+            password2 = request.POST['password2']
+            if password1 == password2:
+                if User.objects.filter(username=unm).exists():
+                    messages.info(request, 'Username is taken')
+                    return redirect('addclient')
+                elif User.objects.filter(email=email).exists():
+                    messages.info(request, 'Email is taken')
+                    return redirect('addclient')
+                else:
+                    user = User.objects.create_user(username=unm, password=password1, email=email, first_name=fnm,
+                                                last_name=lnm)
+
+                client1 = Client()
+                client1.user = user
+                client1.company_name = cnm
+                client1.company_logo = clogo
+                user.save()
+                client1.save()
+                messages.info(request, 'New User created')
+                clients_list = get_clientlist()
+
+                cmd = ''
+                return render(request, 'show_clients.html', {'client_list': clients_list})
+            else:
+                messages.info(request, 'Password not matching')
+                return redirect('addclient')
+    else:
+        #print("in else part")
+        return render(request,'addclient.html')
+
+    return render(request, 'client_menu.html')
+
+def client_menu(request):
+    return render(request, 'client_menu.html')
+
+def show_clients(request):
+    clients_list = get_clientlist()
+    #print("clients_list in show_clients: ",clients_list)
+    return render(request, 'show_clients.html', {'client_list': clients_list})
+
+def deleteclient(request):
+    if request.method == 'POST':
+        temp = str(request.POST.get('Delete_now'))
+        #print('client to delete:',temp)
+        temp1 = Client.objects.filter(company_name = temp).delete()
+        #print('client deleted')
+        clients_list = get_clientlist()
+        return render(request, 'show_clients.html', {'client_list': clients_list})
+    return render(request, 'addclient.html')
+
+
+@csrf_exempt
+def uploadvideo(request):
+    # Copy local file to bucket
+    # aws s3 cp file-name s3://bucket-name
+    str1 = 'aws s3 cp '
+
+    city_names = []
+    if request.user.is_superuser:
+        user_or_admin = 'admin'
+        full_list = get_all_clients_and_signals()
+    else:
+        user_or_admin = 'user'
+        values = get_city_and_location(request.user.username)
+        cnm = values['company_name']
+        #print('cnm:', cnm)
+        city_names = values['city_names']
+
+    #if request.method == 'POST' and request.FILES['fileToUpload']:
+    if request.method == 'POST':
+        #print("\n#### Upload video to given bucket ####\n")
+        temp = 's3://ecube-eis/'
+        if request.user.is_superuser:
+            signal_location = str(request.POST.get('company_name'))
+            #print(signal_location)
+            temp1 = temp + signal_location + '/'
+            cnm, location = signal_location.split('/')
+        else:
+            location = str(request.POST.get('signal'))
+            #print(location)
+            temp1 = temp + cnm + '/' + location + '/'
+
+        #print('temp1: ', temp1)
+
+        myfile = request.FILES['fileToUpload']
+        fs = FileSystemStorage()
+        video_title = str(myfile.name).replace(" ","-")
+        filename = fs.save(video_title, myfile)
+        #print(myfile.name)
+        #print('filesystem: ',filename)
+        uploaded_file_url = fs.url(filename)
+        path = os.getcwd()
+        #print(uploaded_file_url)
+        source = str(myfile)
+        cmd = str1 + path + uploaded_file_url + ' ' + temp1 + video_title
+        #print(cmd)
+        res = os.popen(cmd)
+        res1 = res.read()
+
+        cmd1 = 'aws s3 ls '
+        list_bucket = cmd1 + temp1 + ' ' + '--recursive'
+        #print(list_bucket)
+        res = os.popen(list_bucket)
+        res1 = list(res)
+        a = get_videos(res1,cnm , location)
+
+        return render(request, 'listout_videos.html', {'show_table': a, 'cnm': cnm, 'city': location})
+    else:
+        #print("in else")
+        if user_or_admin == 'admin':
+            return render(request, 'uploadvideo1.html', {'full_list': full_list})
+        else:
+            return render(request, 'uploadvideo1.html', {'company_name': cnm, 'city_names': city_names})
+
+        return render(request, 'uploadvideo1.html', {'full_list': full_list})
+
+    return render(request,'home.html')
+
+@csrf_exempt
+def uploadvideo_at_all_sites(request):
+    str1 = "aws s3 cp "
+    city_names = []
+    values = get_city_and_location(request.user.username)
+    cnm = values['company_name']
+    #print('cnm:', cnm)
+    city_names = values['city_names']
+    #print("city names: ",city_names)
+    if request.method == 'POST':
+        #print("\n#### Upload video to given bucket ####..........\n")
+        temp = 's3://ecube-eis/' + cnm + '/'
+        length = len(city_names)
+        myfile = request.FILES['fileToUpload']
+        fs = FileSystemStorage()
+        video_title = str(myfile.name).replace(" ","-")
+        #print("video-title:",video_title)
+#        filename = fs.save(myfile.name, myfile)
+        filename = fs.save(video_title,myfile)
+        #print(myfile.name)
+        #print('filename: ', filename)
+        uploaded_file_url = fs.url(filename)
+
+        for i in range(length):
+            str2 = city_names[i]
+            #print("str2: ",str2)
+            temp1 = temp + str2 + '/'
+            #print('temp: ', temp1)
+
+            path = os.getcwd()
+            #print("uploaded file url:",uploaded_file_url)
+            source = str(myfile)
+            cmd = str1 + path + uploaded_file_url + ' ' + temp1 + video_title
+            #print(cmd)
+            res = os.popen(cmd)
+            res1 = res.read()
+
+        return render(request,'userpage.html')
+    else:
+        return render(request,'uploadvideo_at_all_sites.html')
+
+@csrf_exempt
+def deletevideo(request):
+    str1 = 'aws s3 rm s3://ecube-eis/'
+#    print("In delete video function")
+    if request.method == 'POST':
+        if request.user.is_superuser:
+            #print("its admin")
+            cnm = str(request.POST.get('cnm'))
+            city = str(request.POST.get('city_nm'))
+            cnm_and_city = cnm + '/' + city + '/'
+        else:
+            cnm = str(request.POST.get('cnm'))
+            city = str(request.POST.get('city_nm'))
+            cnm_and_city = cnm + '/' + city + '/'
+
+        #print('video location to delete : ',cnm_and_city)
+        video = str(request.POST.get('Delete_now'))
+        #print('Delete_now ',video)
+
+        delete_video = str1 + cnm_and_city + video
+        # delete_video = str1 + ' rb s3://' + name + ' --force'    # To delete bucket
+        #print(delete_video)
+        os.system(delete_video)
+
+        list_bucket = 'aws s3 ls s3://ecube-eis/' + cnm_and_city + ' ' + '--recursive'
+        #print(list_bucket)
+        res = os.popen(list_bucket)
+        res1 = list(res)
+        a = get_videos(res1,cnm,city)
+
+        return render(request, 'listout_videos.html', {'show_table': a, 'cnm': cnm, 'city': city})
+    else :
+        return render(request, 'userpage.html')
+
+    return render(request, 'userpage.html')
+
+def displaylist_user(request):
+    # List all Objects in a Bucket Recursively
+    # aws s3 ls s3://sbucket --recursive
+
+    str1 = 'aws s3 ls s3://ecube-eis/'
+    city_names = []
+    if request.user.is_superuser:
+        print("admin")
+    else:
+        current_user = request.user.username
+        values = get_city_and_location(current_user)
+        city_names = values['city_names']
+
+    if request.method == 'POST':
+        if request.user.is_superuser:
+            print("its admin")
+            signal_location = str(request.POST.get('location'))
+            #print(location)
+            cnm,location = signal_location.split('/')
+            #print(cnm)
+            #print(location)
+        else:
+            #print("\n#### List all objects in a bucket recursively ####\n")
+            location = str(request.POST.get('location'))
+            #print('location selected for listout : ',location)
+            cnm = values['company_name']
+            #print('cnm:', cnm)
+
+        cmd = str1 + cnm + '/'
+        list_bucket = cmd + location + ' ' + '--recursive'
+        #print(list_bucket)
+        res = os.popen(list_bucket)
+        res1 = list(res)
+        a = get_videos(res1,cnm,location)
+        return render(request, 'listout_videos.html', {'show_table':a, 'cnm':cnm , 'city': location})
+    else:
+        if request.user.is_superuser:
+            return render(request, 'adminpage.html')
+        else:
+            return render(request, 'displaylist_user.html', {'city_names': city_names})
+
+def displaylist_admin(request):
+    full_list = get_all_clients_and_signals()
+    #print("full list",full_list)
+    return render(request, 'displaylist_admin.html',{"full_list": full_list}) 
+
+def password_reset_request(request):
+    if request.method == "POST":
+        password_reset_form = PasswordResetForm(request.POST)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            associated_users = User.objects.filter(Q(email=data))
+            if associated_users.exists():
+                for user in associated_users:
+                    subject = "Password Reset Requested"
+                    email_template_name = "Forgot_password/password_reset_email.txt"
+                    c = {
+                    "email":user.email,
+                    'domain':'ecubesolutions.in',
+                    'site_name': 'ecubesolutions.in',
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "user": user,
+                    'token': default_token_generator.make_token(user),
+                    'protocol': 'http',
+                    }
+                    email = render_to_string(email_template_name, c)
+                    try:
+                        send_mail(subject, email, 'ecubesolutio99@gmail.com' , [user.email], fail_silently=False)
+                    except BadHeaderError:
+                        return HttpResponse('Invalid header found.')
+                    messages.success(request, 'A message with reset password instructions has been sent to your inbox.')
+                    return redirect("/")
+                    #return redirect ("/password_reset/done/")
+            messages.error(request, 'An invalid email has been entered.')
+    password_reset_form = PasswordResetForm()
+    return render(request= request, template_name="Forgot_password/password_reset.html",
+                  context={"password_reset_form": password_reset_form})
+
+
+class MinimumLengthValidator(object):
+    """
+    Validate whether the password is of a minimum length.
+    """
+    def __init__(self, min_length=10):
+        self.min_length = min_length
+
+    def validate(self, password, user=None):
+        if len(password) < self.min_length:
+            raise ValidationError(
+                ungettext(
+                    "This password is too short. It must contain at least %(min_length)d character.",
+                    "This password is too short. It must contain at least %(min_length)d characters.",
+                    self.min_length
+                ),
+                code='password_too_short',
+                params={'min_length': self.min_length},
+            )
+
+    def get_help_text(self):
+        return ungettext(
+            "Your password must contain at least %(min_length)d character.",
+            "Your password must contain at least %(min_length)d characters.",
+            self.min_length
+        ) % {'min_length': self.min_length}

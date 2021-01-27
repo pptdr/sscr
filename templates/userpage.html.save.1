@@ -1,0 +1,147 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+      <title>Smart Signal Management</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> </head>
+  <body style="background: aliceblue;">
+
+	  <div class="company-name">
+        <div class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Hello, SDP
+          <span class="caret"></span></button>
+          <ul class="dropdown-menu topnav-right">
+            <li><a href="home">Home</a></li>
+            <li><a href="about">About</a></li>
+            <li><a href="/logout">Logout</a></li>
+          </ul>
+        </div>
+        <img src="static/images/Ecube_logo.png" width="40" height="40">
+        <span>Ecube integrated solutions (OPC) Pvt.Ltd</span>
+      </div>
+
+        </div>
+    </div>
+<style>
+
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  left: 15px;
+  position: absolute;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+
+.company-name{
+    height: 50px;
+    line-height: 25px;
+    font-size: 25px;
+    padding: 10px 0;
+    text-align: center;
+    background: lightskyblue;
+}
+
+.topnav-right {
+  float: right;
+}
+.navbar-text {
+  width: 100px;
+  position: absolute;
+  margin: 15px 20px;
+}
+.parent-container {
+  height: 160px;
+  width: 300px;
+  background: aliceblue;
+  position: relative;
+  margin-left: calc(50% - 150px);
+  top: 100px;
+}
+
+.usr-button {
+  width: 200px;
+  height: 40px;
+  font-size: 20px;
+  margin: 20px 50px;
+}
+</style>
+
+<script>
+    /* When the user clicks on the button, 
+    toggle between hiding and showing the dropdown content */
+    function myFunction() {
+      document.getElementById("myDropdown").classList.toggle("show");
+    }
+    
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function(event) {
+      if (!event.target.matches('.dropbtn')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        var i;
+        for (i = 0; i < dropdowns.length; i++) {
+          var openDropdown = dropdowns[i];
+          if (openDropdown.classList.contains('show')) {
+            openDropdown.classList.remove('show');
+          }
+        }
+      }
+    }
+    </script>
+
+
+
+
+
+   <!--
+      <div class="container">
+        <h1 class="logo">Ecube Integrated Solutions web app</h1>
+        <strong><nav>
+         <ul class="menu">
+              <li><a href="/home">Home</a></li>
+              <li><a href="adminhome">Home</a></li>
+              <li><a href="about">About us</a></li>
+              
+				    <li> Hello, sdp</li>
+					<li><a href="/logout">Logout</a></li>
+			  
+              </ul>
+        </nav></strong>
+      </div> -->
+<!--
+      <div class="parent-container">
+      	<button class="usr-button"><a href="uploadvideo">Upload video</a</button>
+	<button class="usr-button"><a href="displaylist_user">List out videos</a></button>
+      </div> -->
+
+
+       
+    </body>
+</html>
+

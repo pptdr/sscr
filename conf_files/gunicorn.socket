@@ -1,0 +1,8 @@
+[Unit]
+Description=gunicorn socket
+
+[Socket]
+ListenStream=/home/ubuntu/ecubesolutions.in/venv/smart_signal/run/gunicorn.sock
+
+[Install]
+WantedBy=sockets.target

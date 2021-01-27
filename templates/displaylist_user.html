@@ -1,0 +1,47 @@
+{% load static %}
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Display list of client</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css'%}">
+    <script type="text/javascript" src="{% static 'components/SmartSignalHeader/smartSignalHeader.js'%}"></script>
+    <script type="text/javascript" src="{% static 'components/SmartSignalSidebar/smartSignalSidebarUser.js'%}"></script>
+</head>
+<body>
+	<smart-signal-header name="{{user.first_name}}" isAuthenticated="{{user.is_authenticated}}"></smart-signal-header>
+        <smart-signal-sidebar-user></smart-signal-sidebar-user>
+
+	<div class="ss-main-container">
+	<img class="ss-default-bg" src="/static/images/Ecube_logo.png"/>
+	    <form action="/listout_videos" method="POST" enctype="multipart/form-data">
+        	{% csrf_token %}
+	        {% block content %}
+                {{ user.company_logo }}
+        	<div>
+	            <label for="location">Choose location and signal:</label>
+        	    <select id="location" name="location">
+                	{% for client in city_names %}
+	                    <option value="{{client}}">{{client}}</option>
+        	        {% endfor %}
+	            </select>
+        	</div>
+	        <br> 
+	
+	        <input type="submit" name="Listout" value="List all videos at selected signal">
+
+        	{% endblock %}
+                <div class="footer">
+	          <p>Developed by Ecube integrated solutions (OPC) private limited </p>
+        	</div>
+		 
+	     </form>
+     </div>
+</body>
+</html>

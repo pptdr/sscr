@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Show all clients</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css'%}">
+    <script type="text/javascript" src="{% static 'components/SmartSignalHeader/smartSignalHeader.js'%}"></script>
+    <script type="text/javascript" src="{% static 'components/SmartSignalSidebar/smartSignalSidebarAdmin.js'%}"></script>
+    <style>
+	.center {
+		  margin-left: auto;
+		  margin-right: auto;
+	}
+    </style>
+</head>
+<body>
+  <smart-signal-header name="{{user.first_name}}" isAuthenticated="{{user.is_authenticated}}"></smart-signal-header>
+     <smart-signal-sidebar-admin></smart-signal-sidebar-admin>
+<form action="/deleteclient" method="POST" onSubmit="return confirm('Are you sure you want to delete this client?');">
+    <div class="ss-main-container">
+<img class="ss-default-bg" src="/static/images/Ecube_logo.png"/>
+ {% csrf_token %}
+        {% block content %}
+
+        <table class="show-all-clients-cont ss-table">
+            <tr>
+                <th>Sr. No.</th>
+                <th>Clients</th>
+                <th>Delete client?</th>
+            </tr>
+            {% for client in client_list %}
+            <tr>
+                {% for c in client %}
+                <td>  {{c}} </td>
+                {% endfor %}
+                <td>
+                    <input type="submit" style="background-color: RED;" name="Delete_now" value={{ client.1 }}>
+                </td>
+                {% endfor %}
+            </tr>
+        </table>
+        {% endblock %}
+    </p>
+    </form>
+    <br><br>
+
+
+</div>
+</body>
+</html>

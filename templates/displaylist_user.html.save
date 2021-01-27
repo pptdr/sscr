@@ -1,0 +1,37 @@
+{% load static %}
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Display list of client</title>
+</head>
+<body bgcolor="#33a5ff" >
+
+
+     <form action="/listout_videos" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>
+        {% block content %}
+
+        <div>
+            <br><br>
+            <label for="location">Choose location and signal:</label>
+            <select id="location" name="location">
+                {% for client in city_names %}
+                    <option value="{{client}}">{{client}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <br> <br>
+        <input type="submit" name="Listout" value="List all videos at selected signal">
+
+        {% endblock %}
+         </p>
+     </form>
+
+<br><br>
+<p><a href="{% url 'home' %}">Return to home</a></p>
+</body>
+</html>

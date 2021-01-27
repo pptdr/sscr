@@ -1,0 +1,154 @@
+{% load static %}
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Upload video page</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/main.css'%}">
+    <script type="text/javascript" src="{% static 'components/SmartSignalHeader/smartSignalHeader.js'%}"></script>
+    <style>
+        table { border : none }
+    </style>
+</head>
+<body>
+
+ <smart-signal-header name="{{user.first_name}}" isAuthenticated="{{user.is_authenticated}}"></smart-signal-header>
+        {% csrf_token %}
+        {% block content %}
+
+         {% if user.is_superuser %}
+                <script type="text/javascript" src="{% static 'components/SmartSignalSidebar/smartSignalSidebarAdmin.js'%}"></script>
+                <smart-signal-sidebar-admin></smart-signal-sidebar-admin>
+         {% else %}
+                <script type="text/javascript" src="{% static 'components/SmartSignalSidebar/smartSignalSidebarUser.js'%}"></script>
+                <smart-signal-sidebar-user></smart-signal-sidebar-user>
+         {% endif %}
+<div class="ss-main-container">
+        <img class="ss-default-bg" src="/static/images/Ecube_logo.png"/>
+     <form action="uploadvideo1" method="POST" enctype="multipart/form-data">
+	<table border="0" width="680px" cellpadding="0" cellspacing="0" align="left"> 
+<!--	<table border="0" align="center" width="700" bgcolor="#CCCCCC" >  -->
+	<tr>
+	<th style="border:none;">Select location:</th>
+	<td style="border:none;">
+        {% if user.is_superuser %}
+                <div>
+                <label for="company_name"></label>
+                    <select id="company_name" name="company_name">
+                    {% for cnm in full_list %}
+                        <option value="{{cnm}}">{{cnm}}</option>
+                    {% endfor %}
+                    </select>
+        </div>
+        {% else %}
+	   <div>
+                    <label for="signal"></label>
+                    <select id="signal" name="signal">
+                    {% for client in city_names %}
+                        <option value="{{client}}">{{client}}</option>
+                    {% endfor %}
+                    </select>
+        </div>
+         {% endif %}
+	</td>
+	</tr>
+	<tr>
+        <td style="border:none;"> &nbsp; </td>
+        </tr>
+	<tr>
+        <th style="border:none;">Select video to upload:</th>
+	<td style="border:none;">
+        <input type="file" name="fileToUpload" id="fileToUpload" accept="video/*" required>
+        {% if uploaded_file_url %}
+                <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+        {% endif %}
+	</td>
+	</tr>
+	<tr style="border:none;">
+        <td style="border:none;"> &nbsp; </td>
+        </tr>
+	<tr style="border:none;">
+	<td colspan="2" style="border:none;" align="center"><input type="submit" value="Upload video" name="submit"/>
+	</td>
+	</tr>
+	 {% endblock %}
+	</table>
+        <div class="footer">
+          <p>Developed by Ecube integrated solutions (OPC) private limited </p>
+        </div>
+
+    </form>
+ </div>
+<script>
+
+// Invoke HTML5 custom constraints validation to enforce MIME-type as defined in file inputs' `accept` attribute.
+void function enhanceFileInputTypeValidityCheck(){
+  var inputPrototype      = document.createElement( 'input' ).constructor.prototype;
+  // Keep a local reference to out-of-the-box functionality we're about to enhance
+  var nativeCheckValidity = inputPrototype.checkValidity;
+  // I don't know why, but custom validation only appears to work 
+  // if I bind to both these events - even neither triggers it...
+  // http://stackoverflow.com/questions/21003342/how-do-i-invoke-custom-constraint-validation-as-part-of-the-native-validation-ev
+  var events              = [ 'change', 'input' ];
+
+  // Pre-validation check, to see if an input is eligible for file type validation.
+  function shouldValidate( element ){
+    return ( element instanceof HTMLInputElement &&
+             element.type === 'file'             &&  
+             element.accept                      &&
+             element.files                       &&
+   element.files.length
+    );
+  }
+
+  // Our custom validation function
+  function validateFileInputType( input ){
+    // Convert MIME-type patterns as described in the `accept` attribute
+    // into a valid expression to test actual MIME-type against
+    var MIMEtype = new RegExp( input.accept.replace( '*', '[^\\/,]+' ) );
+
+    // Ensure each of the input's files' types conform to the above
+    return Array.prototype.every.call( input.files, function passesAcceptedFormat( file ){
+      return MIMEtype.test( file.type );
+    } );
+  }
+  
+  // Perform `checkValidity` on each input
+ function validateInputs(){
+    Array.prototype.forEach.call( document.querySelectorAll( 'input, select' ), function callValidation( input ){
+      input.checkValidity();
+    } );
+  }
+
+  // Enhance native `checkValidity` behaviour
+  inputPrototype.checkValidity = function enhancedCheckValidity(){
+    if( shouldValidate( this ) ){
+      if( !validateFileInputType( this ) ){
+        // Replace the argument below with whatever you want
+        this.setCustomValidity( 'Please only submit files of type ' + this.accept );
+
+        return false;
+      }
+    }
+// Hand back to native functionality
+    return nativeCheckValidity.apply( this );
+  }
+
+  // Bind it up!
+  events.forEach( function bindValidation( event ){
+    document.documentElement.addEventListener( event, validateInputs );
+  } );
+}();
+</script>
+</body>
+</html>
+
+
+
+

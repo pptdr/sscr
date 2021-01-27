@@ -1,0 +1,54 @@
+{% load static %}
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>Upload video page</title>
+</head>
+<body bgcolor="#33a5ff" >
+    <p>
+     <form action="uploadvideo" method="POST" enctype="multipart/form-data">
+     
+        {% csrf_token %}
+        <p>
+        {% block content %}
+        {% if user.is_superuser %}
+	        <div>
+		<label for="company_name">Choose company name:</label>
+                    <select id="company_name" name="company_name">
+                    {% for cnm in full_list %}
+                        <option value="{{cnm}}">{{cnm}}</option>
+                    {% endfor %}
+                    </select>
+        </div>
+        {% else %}
+        <div>
+                    <label for="signal">Choose location:</label>
+                    <select id="signal" name="signal">
+                    {% for client in city_names %}
+                        <option value="{{client}}">{{client}}</option>
+                    {% endfor %}
+                    </select>
+        </div>
+         {% endif %}
+
+
+
+        <br> <br>
+        Select video to upload:
+        <input type="file" name="fileToUpload" id="fileToUpload" accept="video/*" required>
+        <input type="submit" value="Upload video" name="submit">
+
+        {% if uploaded_file_url %}
+                <p>File uploaded at: <a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+        {% endif %}
+
+        <p><a href="{% url 'home' %}">Home</a></p>
+     {% endblock %}
+    </p>
+    </form>
+</p>
+</body>
+</html>
